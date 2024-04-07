@@ -40,6 +40,7 @@ const AuthPage = () => {
         if(res.ok){
             res.json().then((data)=>{
                 localStorage.setItem("token",data.idToken);
+                localStorage.setItem("user",data.email);
             })
             nav("/home");
         }
