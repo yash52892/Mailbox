@@ -2,17 +2,20 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import List from "./List";
 
+
 const Inbox = (props) => {
   const nav = useNavigate();
   const [mails, setMails] = useState({});
   const email = localStorage.getItem("user");
   const user = email.replace(/[^a-zA-Z ]/g, "");
   useEffect(() => {
-    fetch(`https://fir-18784-default-rtdb.firebaseio.com/${user}.json`).then(
+    fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/${user}.json`).then(
       (res) => res.json().then((data) => setMails(data))
     )},[user]);
-    const arr = Object.values(mails);
-    const inboxmail = arr.map((i) => (<List mail={{email: i.email,sub: i.sub,message: i.message,minute: i.minute,date: i.date,}}/>));
+    console.log(mails); 
+    const arr = Object.entries(mails);
+    console.log(arr);
+    const inboxmail = arr.map((i) => (<List mail={{key:i[0],email: i[1].email,sub: i[1].sub,message: i[1].message,minute: i[1].minute,date: i[1].date, markAsRead:i[1].markAsRead}}/>));
   const handleCompose = () => {nav("/compose");};
   return (
     <>
@@ -20,7 +23,7 @@ const Inbox = (props) => {
           <h2 className="text-blue pb-3">Inbox</h2>
           <div className="tab-content" id="myTabContent">
             <div
-              className="tab-pane fade active show"
+              className="tab-pane active show"
               id="inbox"
               aria-labelledby="inbox-tab"
               role="tabpanel"
