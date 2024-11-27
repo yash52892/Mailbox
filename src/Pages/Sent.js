@@ -1,21 +1,26 @@
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useLocation} from "react-router-dom";
 import { useEffect, useState } from "react";
 import List from "./List";
 
+
+
 const Sent = (props) => {
   const nav = useNavigate();
+  const location = useLocation();
+  //const Name = location.params.testvalue;
+  console.log(location);
   const [sentMail, setSentMail] = useState({});
 
   const email = localStorage.getItem("user");
   const user = email.replace(/[^a-zA-Z ]/g, "");
   useEffect(() => {
     fetch(
-      `https://fir-18784-default-rtdb.firebaseio.com/sent${user}.json`
+      `https://mailbox-cabc3-default-rtdb.firebaseio.com/${location.pathname}/${user}.json`
     ).then((res) => res.json().then((data) => setSentMail(data)));
   }, [user]);
 
-  const sarr = Object.values(sentMail);
-  const sentmail=sarr.map((i)=> <List mail={{email:i.email, sub:i.sub, message:i.message, minute:i.minute, date:i.date}}/>)
+  const sarr = Object.entries(sentMail || {});
+  const sentmail=sarr.map((i)=> <List mail={{key:i[0],email: i[1].email,sub: i[1].sub,message: i[1].message,minute: i[1].minute,date: i[1].date, markAsRead:i[1].markAsRead}}/>)
   const handleCompose = () => {nav("/compose");};
   return (
     <>
@@ -47,14 +52,6 @@ const Sent = (props) => {
                           </button>
                           <span className="ml-2 font-normal text-dark">
                             Compose
-                          </span>
-                      </li>
-                      <li className="list-inline-item text-danger">
-                          <button className="btn btn-circle btn-danger text-white">
-                            <i className="fa fa-trash"></i>
-                          </button>
-                          <span className="ml-2 font-normal text-dark">
-                            Delete
                           </span>
                       </li>
                     </ul>
