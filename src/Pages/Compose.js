@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 import { EditorState } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
 import { convertToHTML } from "draft-convert";
@@ -8,6 +9,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Compose.css";
 
 const Compose = () => {
+  const nav=useNavigate();
   const email=useRef("");
   const sub=useRef(null);
   const date = new Date();
@@ -18,13 +20,14 @@ const Compose = () => {
       message:convertedContent,
       date: date.getDate(),
       time:date.getHours(),
-      minute:date.getMinutes()
+      minute:date.getMinutes(),
+      markAsRead:false
     };
    const t2 = email.current.value.replace(/[^a-zA-Z ]/g, "");
    const user=localStorage.getItem("user");
    const sender=user.replace(/[^a-zA-Z ]/g, "");
 
-   fetch(`https://fir-18784-default-rtdb.firebaseio.com/sent${sender}.json`,{
+   fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/home/sent/${sender}.json`,{
     method: "POST",
     body: JSON.stringify(obj),
     headers: {
@@ -33,13 +36,14 @@ const Compose = () => {
   })
 
 
-    fetch(`https://fir-18784-default-rtdb.firebaseio.com/${t2}.json`, {
+    fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/home/inbox/${t2}.json`, {
       method: "POST",
       body: JSON.stringify(obj),
       headers: {
         "Content-Type": "application/json;charset=utf-8",
       },
     }).then((res)=>res.json().then((data)=>console.log(data)));
+    nav("/home/sent");
   };
 
   const [cc, setCc] = useState(false);
@@ -64,8 +68,8 @@ const Compose = () => {
   }, [editorState]);
 
   return (
-    <div classNameName="Comp">
-      <header classNameName="Comp-header">Compose Mail</header>
+    <div classnamename="Comp">
+      <header classnamename="Comp-header">Compose Mail</header>
       <input type="email" placeholder="To" size="100" ref={email}required/>
       <button onClick={handleCC}>cc</button>
       <button onClick={handleBcc}>bcc</button>
@@ -75,14 +79,14 @@ const Compose = () => {
       <Editor
         editorState={editorState}
         onEditorStateChange={setEditorState}
-        wrapperclassNameName="wrapper-className"
-        editorclassNameName="editor-className"
-        toolbarclassNameName="toolbar-className"
+        wrapperclassnamename="wrapper-className"
+        editorclassnamename="editor-className"
+        toolbarclassnamename="toolbar-className"
       />
       <button type="submit" onClick={handleSend}>
         Send
       </button>
-      <div classNameName="preview"></div>
+      <div classnamename="preview"></div>
     </div>
   );
 };
