@@ -1,22 +1,22 @@
 import { useNavigate,useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
 import List from "./List";
+import useFetch from "./Fetch";
 
 
 const Inbox = (props) => {
   const nav = useNavigate();
   const location = useLocation();
-  console.log(location.pathname);
-  const [mails, setMails] = useState({});
+  // const [mails, setMails] = useState({});
   const email = localStorage.getItem("user");
   const user = email.replace(/[^a-zA-Z ]/g, "");
-  useEffect(() => {
-    fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/${location.pathname}/${user}.json`).then(
-      (res) => res.json().then((data) => setMails(data))
-    )},[user]);
-    console.log(mails); 
-   
-    const arr = Object.entries(mails || {});
+
+  const mails=useFetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/${location.pathname}/${user}.json`);
+  // useEffect(() => {
+  //   fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/${location.pathname}/${user}.json`).then(
+  //     (res) => res.json().then((data) => setMails(data))
+  //   )},[user]);
+    const arr = Object.entries(mails.data || {});
     const inboxmail = arr.map((i) => (<List mail={{key:i[0],email: i[1].email,sub: i[1].sub,message: i[1].message,minute: i[1].minute,date: i[1].date, markAsRead:i[1].markAsRead}}/>));
     
     const handleCompose = () => {nav("/compose");};
