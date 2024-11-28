@@ -8,12 +8,11 @@ const Home = (props) => {
   const email = localStorage.getItem("user");
   const user = email.replace(/[^a-zA-Z ]/g, "");
 
-  useEffect(() => {
-    setInterval(() => { 
-      fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/home/inbox/${user}.json`).then(
-        (res) => res.json().then((data) => setN(data)))
+setInterval(() => { 
+     //const n=useFetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/home/inbox/${user}.json`);
+       fetch(`https://mailbox-cabc3-default-rtdb.firebaseio.com/home/inbox/${user}.json`).then(
+         (res) => res.json().then((data) => setN(data)))
     }, 10000);
-    },[]);
 let x= Object.keys(n || {}).length;
   return (
     <div className="container">
@@ -53,7 +52,6 @@ let x= Object.keys(n || {}).length;
                   aria-controls="sent"
                   role="tab"
                   aria-selected="false"
-                  params={{ testvalue: "sent" }}
                 >
                   <span className="d-block d-md-none">
                     <i className="ti-export"></i>
